@@ -175,7 +175,8 @@ export default {
     treeTable: 'Tree table',
     PicturePreview: 'Table Image Preview',
     department: 'Department management',
-    menuManagement: 'Menu management'
+    menuManagement: 'Menu management',
+    blankPage: 'Blank page'
   },
   permission: {
     hasPermission: 'Please set the operation permission value'

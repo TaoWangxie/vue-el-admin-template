@@ -22,12 +22,20 @@ const adminList = [
         meta: {
           title: 'Demo'
         }
+      },
+      {
+        path: 'BlankPage',
+        name: 'BlankPage',
+        component: 'views/blank/Blank',
+        meta: {
+          title: 'router.blankPage'
+        }
       }
     ]
   }
 ]
 
-const testList: string[] = ['/demo', '/demo/index']
+const testList: string[] = ['/demo', '/demo/index', '/blank/index']
 
 export default [
   // 列表接口

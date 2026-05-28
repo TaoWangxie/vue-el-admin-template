@@ -76,6 +76,27 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         }
       }
     ]
+  },
+  {
+    path: '/blank',
+    component: Layout,
+    name: 'Blank',
+    redirect: '/blank/index',
+    meta: {
+      title: 'router.blankPage',
+      icon: 'ep-icon:Document'
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'BlankPage',
+        component: () => import('@/views/blank/Blank.vue'),
+        meta: {
+          title: 'router.blankPage',
+          icon: 'ep-icon:Document'
+        }
+      }
+    ]
   }
 ]
 
