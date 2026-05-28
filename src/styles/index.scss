@@ -5,3 +5,9 @@
 .el-popup-parent--hidden {
   width: 100% !important;
 }
+
+.el-card {
+  --el-card-border-color: transparent;
+
+  border: none !important;
+}

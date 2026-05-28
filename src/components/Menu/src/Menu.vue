@@ -156,17 +156,12 @@ $prefix-cls: '#{$namespace}-menu';
     .#{$elNamespace}-menu-item.is-active {
       position: relative;
       color: var(--left-menu-text-active-color) !important;
-      background-color: transparent !important;
-
-      &:hover {
-        background-color: transparent !important;
-      }
 
       &::before {
         position: absolute;
         inset: 0 12px;
         content: '';
-        background-color: var(--left-menu-bg-active-color);
+        background-color: var(--left-menu-bg-active-overlay-color);
         border-radius: 6px;
       }
 
@@ -180,11 +175,11 @@ $prefix-cls: '#{$namespace}-menu';
       position: relative;
     }
 
-    // 设置子菜单的背景颜色
+    // 子菜单不额外铺底色，避免层级菜单出现独立色块
     .#{$elNamespace}-menu {
       .#{$elNamespace}-sub-menu__title,
       .#{$elNamespace}-menu-item:not(.is-active) {
-        background-color: var(--left-menu-bg-light-color) !important;
+        background-color: transparent !important;
       }
     }
   }
@@ -196,13 +191,12 @@ $prefix-cls: '#{$namespace}-menu';
     & > .is-active,
     & > .is-active > .#{$elNamespace}-sub-menu__title {
       position: relative;
-      background-color: transparent !important;
 
       &::before {
         position: absolute;
         inset: 0 8px;
         content: '';
-        background-color: var(--left-menu-collapse-bg-active-color);
+        background-color: var(--left-menu-bg-active-overlay-color);
         border-radius: 6px;
       }
 
@@ -277,17 +271,12 @@ $prefix-cls: '#{$namespace}-menu-popper';
   // 设置选中时的高亮背景
   .el-menu-item.is-active {
     position: relative;
-    background-color: transparent !important;
-
-    &:hover {
-      background-color: transparent !important;
-    }
 
     &::before {
       position: absolute;
       inset: 0 12px;
       content: '';
-      background-color: var(--left-menu-bg-active-color);
+      background-color: var(--left-menu-bg-active-overlay-color);
       border-radius: 6px;
     }
 

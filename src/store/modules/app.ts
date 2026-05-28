@@ -5,7 +5,18 @@ import { ElMessage, ComponentSize } from 'element-plus'
 import { colorIsDark, lighten, mix } from '@/utils/color'
 import { useDark } from '@vueuse/core'
 
-const MENU_ACTIVE_BG_COLOR = 'rgb(255 255 255 / 22%)'
+const MENU_ACTIVE_BG_COLOR = 'transparent'
+const MENU_ACTIVE_OVERLAY_COLOR = 'rgb(255 255 255 / 22%)'
+const LEFT_MENU_DEFAULT_THEME = {
+  leftMenuBorderColor: 'inherit',
+  leftMenuBgColor: '#001529',
+  leftMenuBgLightColor: '#0f2438',
+  leftMenuTextColor: '#bfcbd9',
+  logoTitleTextColor: '#fff',
+  logoBorderColor: 'inherit'
+}
+
+const WHITE_MENU_BG_VALUES = ['#fff', '#ffffff', 'white', 'rgb(255, 255, 255)', 'rgb(255 255 255)']
 
 interface AppState {
   breadcrumb: boolean
@@ -255,9 +266,16 @@ export const useAppStore = defineStore('app', {
       this.theme = Object.assign(this.theme, theme)
     },
     setCssVarTheme() {
+      const currentMenuBg = String(this.theme.leftMenuBgColor || '')
+        .trim()
+        .toLowerCase()
+      if (WHITE_MENU_BG_VALUES.includes(currentMenuBg)) {
+        this.theme = Object.assign(this.theme, LEFT_MENU_DEFAULT_THEME)
+      }
       this.theme.leftMenuBgActiveColor = MENU_ACTIVE_BG_COLOR
       this.theme.leftMenuCollapseBgActiveColor = MENU_ACTIVE_BG_COLOR
       this.theme.leftMenuTextActiveColor = '#fff'
+      setCssVar('--left-menu-bg-active-overlay-color', MENU_ACTIVE_OVERLAY_COLOR)
       for (const key in this.theme) {
         setCssVar(`--${humpToUnderline(key)}`, this.theme[key])
       }

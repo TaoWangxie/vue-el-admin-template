@@ -2,8 +2,7 @@
 import { ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useDesign } from '@/hooks/web/useDesign'
-import LockDialog from './components/LockDialog.vue'
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import LockPage from './components/LockPage.vue'
 import { useLockStore } from '@/store/modules/lock'
 import { useUserStore } from '@/store/modules/user'
@@ -23,17 +22,6 @@ const { t } = useI18n()
 const loginOut = () => {
   userStore.logoutConfirm()
 }
-
-const dialogVisible = ref<boolean>(false)
-
-// 锁定屏幕
-const lockScreen = () => {
-  dialogVisible.value = true
-}
-
-const toDocument = () => {
-  window.open('https://element-plus-admin-doc.cn/')
-}
 </script>
 
 <template>
@@ -51,19 +39,12 @@ const toDocument = () => {
     <template #dropdown>
       <ElDropdownMenu>
         <ElDropdownItem>
-          <div @click="toDocument">{{ t('common.document') }}</div>
-        </ElDropdownItem>
-        <ElDropdownItem divided>
-          <div @click="lockScreen">{{ t('lock.lockScreen') }}</div>
-        </ElDropdownItem>
-        <ElDropdownItem>
           <div @click="loginOut">{{ t('common.loginOut') }}</div>
         </ElDropdownItem>
       </ElDropdownMenu>
     </template>
   </ElDropdown>
 
-  <LockDialog v-if="dialogVisible" v-model="dialogVisible" />
   <teleport to="body">
     <transition name="fade-bottom" mode="out-in">
       <LockPage v-if="getIsLock" />

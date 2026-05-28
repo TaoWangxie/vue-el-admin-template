@@ -477,7 +477,7 @@ $prefix-cls: '#{$namespace}-tags-view';
 
 .#{$prefix-cls} {
   --tags-view-active-color: var(--el-color-primary);
-  --tags-view-active-bg-color: #f2f3f5;
+  --tags-view-active-bg-color: var(--app-content-bg-color);
   --tags-view-text-color: #909399;
 
   :deep(.#{$elNamespace}-scrollbar__view) {
@@ -570,6 +570,8 @@ $prefix-cls: '#{$namespace}-tags-view';
 .dark {
   .#{$prefix-cls} {
     &__tool {
+      background-color: var(--el-bg-color);
+
       &--first {
         &::after {
           display: none;
