@@ -295,9 +295,9 @@ export default defineComponent({
       return Object.assign(
         {
           small: false,
-          background: false,
+          background: true,
           pagerCount: 7,
-          layout: 'sizes, prev, pager, next, jumper, ->, total',
+          layout: 'total, sizes, prev, pager, next, jumper',
           pageSizes: [10, 20, 30, 40, 50, 100],
           disabled: false,
           hideOnSinglePage: false,
@@ -589,7 +589,7 @@ export default defineComponent({
             <ElPagination
               v-model:pageSize={pageSizeRef.value}
               v-model:currentPage={currentPageRef.value}
-              class="mt-10px"
+              class="mt-10px justify-end"
               {...unref(pagination)}
             ></ElPagination>
           ) : undefined}

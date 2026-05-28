@@ -154,11 +154,25 @@ $prefix-cls: '#{$namespace}-menu';
 
     // 设置选中时的高亮背景和高亮颜色
     .#{$elNamespace}-menu-item.is-active {
+      position: relative;
       color: var(--left-menu-text-active-color) !important;
-      background-color: var(--left-menu-bg-active-color) !important;
+      background-color: transparent !important;
 
       &:hover {
-        background-color: var(--left-menu-bg-active-color) !important;
+        background-color: transparent !important;
+      }
+
+      &::before {
+        position: absolute;
+        inset: 0 12px;
+        content: '';
+        background-color: var(--left-menu-bg-active-color);
+        border-radius: 6px;
+      }
+
+      & > * {
+        position: relative;
+        z-index: 1;
       }
     }
 
@@ -182,7 +196,20 @@ $prefix-cls: '#{$namespace}-menu';
     & > .is-active,
     & > .is-active > .#{$elNamespace}-sub-menu__title {
       position: relative;
-      background-color: var(--left-menu-collapse-bg-active-color) !important;
+      background-color: transparent !important;
+
+      &::before {
+        position: absolute;
+        inset: 0 8px;
+        content: '';
+        background-color: var(--left-menu-collapse-bg-active-color);
+        border-radius: 6px;
+      }
+
+      & > * {
+        position: relative;
+        z-index: 1;
+      }
     }
   }
 
@@ -250,10 +277,23 @@ $prefix-cls: '#{$namespace}-menu-popper';
   // 设置选中时的高亮背景
   .el-menu-item.is-active {
     position: relative;
-    background-color: var(--left-menu-bg-active-color) !important;
+    background-color: transparent !important;
 
     &:hover {
-      background-color: var(--left-menu-bg-active-color) !important;
+      background-color: transparent !important;
+    }
+
+    &::before {
+      position: absolute;
+      inset: 0 12px;
+      content: '';
+      background-color: var(--left-menu-bg-active-color);
+      border-radius: 6px;
+    }
+
+    & > * {
+      position: relative;
+      z-index: 1;
     }
   }
 }

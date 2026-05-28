@@ -2,10 +2,10 @@ import { defineStore } from 'pinia'
 import { store } from '../index'
 import { setCssVar, humpToUnderline } from '@/utils'
 import { ElMessage, ComponentSize } from 'element-plus'
-import { colorIsDark, hexToRGB, lighten, mix } from '@/utils/color'
-import { unref } from 'vue'
-import { useCssVar } from '@vueuse/core'
+import { colorIsDark, lighten, mix } from '@/utils/color'
 import { useDark } from '@vueuse/core'
+
+const MENU_ACTIVE_BG_COLOR = 'rgb(255 255 255 / 22%)'
 
 interface AppState {
   breadcrumb: boolean
@@ -73,9 +73,9 @@ export const useAppStore = defineStore('app', {
         // 左侧菜单浅色背景颜色
         leftMenuBgLightColor: '#0f2438',
         // 左侧菜单选中背景颜色
-        leftMenuBgActiveColor: 'var(--el-color-primary)',
+        leftMenuBgActiveColor: MENU_ACTIVE_BG_COLOR,
         // 左侧菜单收起选中背景颜色
-        leftMenuCollapseBgActiveColor: 'var(--el-color-primary)',
+        leftMenuCollapseBgActiveColor: MENU_ACTIVE_BG_COLOR,
         // 左侧菜单字体颜色
         leftMenuTextColor: '#bfcbd9',
         // 左侧菜单选中字体颜色
@@ -255,6 +255,9 @@ export const useAppStore = defineStore('app', {
       this.theme = Object.assign(this.theme, theme)
     },
     setCssVarTheme() {
+      this.theme.leftMenuBgActiveColor = MENU_ACTIVE_BG_COLOR
+      this.theme.leftMenuCollapseBgActiveColor = MENU_ACTIVE_BG_COLOR
+      this.theme.leftMenuTextActiveColor = '#fff'
       for (const key in this.theme) {
         setCssVar(`--${humpToUnderline(key)}`, this.theme[key])
       }
@@ -275,7 +278,6 @@ export const useAppStore = defineStore('app', {
       }
     },
     setMenuTheme(color: string) {
-      const primaryColor = useCssVar('--el-color-primary', document.documentElement)
       const isDarkColor = colorIsDark(color)
       const theme: Recordable = {
         // 左侧菜单边框颜色
@@ -285,17 +287,13 @@ export const useAppStore = defineStore('app', {
         // 左侧菜单浅色背景颜色
         leftMenuBgLightColor: isDarkColor ? lighten(color!, 6) : color,
         // 左侧菜单选中背景颜色
-        leftMenuBgActiveColor: isDarkColor
-          ? 'var(--el-color-primary)'
-          : hexToRGB(unref(primaryColor), 0.1),
+        leftMenuBgActiveColor: MENU_ACTIVE_BG_COLOR,
         // 左侧菜单收起选中背景颜色
-        leftMenuCollapseBgActiveColor: isDarkColor
-          ? 'var(--el-color-primary)'
-          : hexToRGB(unref(primaryColor), 0.1),
+        leftMenuCollapseBgActiveColor: MENU_ACTIVE_BG_COLOR,
         // 左侧菜单字体颜色
         leftMenuTextColor: isDarkColor ? '#bfcbd9' : '#333',
         // 左侧菜单选中字体颜色
-        leftMenuTextActiveColor: isDarkColor ? '#fff' : 'var(--el-color-primary)',
+        leftMenuTextActiveColor: '#fff',
         // logo字体颜色
         logoTitleTextColor: isDarkColor ? '#fff' : 'inherit',
         // logo边框颜色

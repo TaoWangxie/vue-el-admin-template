@@ -107,6 +107,8 @@ onMounted(() => {
 | `videoPreview` | 自动视频预览字段数组 | `[]` |
 | `customContent` | 是否自定义卡片内容 | `false` |
 
+默认分页使用 Element Plus 的背景色样式，整体居右展示，`total` 位于分页内容最左侧；如需取消背景色，可传入 `:pagination="{ total, background: false }"`。
+
 ## Column 常用配置
 
 | 属性 | 说明 |

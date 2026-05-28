@@ -81,8 +81,8 @@ const setDefault = async () => {
 | `schema` | 查询表单配置，类型同 `FormSchema[]` | `[]` |
 | `isCol` | 是否启用栅格布局 | `false` |
 | `labelWidth` | label 宽度 | `'auto'` |
-| `layout` | 按钮布局：`inline` 或 `bottom` | `'inline'` |
-| `buttonPosition` | `bottom` 布局下按钮位置 | `'center'` |
+| `layout` | 历史兼容配置；按钮固定在表单下方单独一行展示 | `'inline'` |
+| `buttonPosition` | 按钮单独一行时的对齐方式 | `'left'` |
 | `showSearch` | 是否显示查询按钮 | `true` |
 | `showReset` | 是否显示重置按钮 | `true` |
 | `showExpand` | 是否显示展开收起按钮 | `false` |
@@ -112,7 +112,7 @@ const setDefault = async () => {
 }
 ```
 
-按钮使用 `layout="inline"` 时，会作为最后一个表单项拼到 `schema` 后面；使用 `layout="bottom"` 时，会渲染在表单下方。
+查询、重置、展开收起按钮固定渲染在表单下方，始终单独占一行；通过 `buttonPosition` 控制左、中、右对齐。
 
 ## 搜索项列数
 

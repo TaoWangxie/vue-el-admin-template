@@ -21,12 +21,12 @@ const props = defineProps({
   isCol: propTypes.bool.def(false),
   // 表单label宽度
   labelWidth: propTypes.oneOfType([String, Number]).def('auto'),
-  // 操作按钮风格位置
+  // 兼容历史配置；按钮固定在表单下方单独一行展示
   layout: propTypes.string.validate((v: string) => ['inline', 'bottom'].includes(v)).def('inline'),
   // 底部按钮的对齐方式
   buttonPosition: propTypes.string
     .validate((v: string) => ['left', 'center', 'right'].includes(v))
-    .def('center'),
+    .def('left'),
   showSearch: propTypes.bool.def(true),
   showReset: propTypes.bool.def(true),
   // 是否显示伸缩
@@ -96,38 +96,6 @@ const newSchema = computed(() => {
       }
       return v
     })
-  }
-  if (propsComputed.layout === 'inline') {
-    schema = schema.concat([
-      {
-        field: 'action',
-        formItemProps: {
-          labelWidth: '0px',
-          slots: {
-            default: () => {
-              return (
-                <div>
-                  <ActionButton
-                    showSearch={propsComputed.showSearch}
-                    showReset={propsComputed.showReset}
-                    showExpand={propsComputed.showExpand}
-                    searchLoading={propsComputed.searchLoading}
-                    resetLoading={propsComputed.resetLoading}
-                    visible={visible.value}
-                    onExpand={setVisible}
-                    onReset={reset}
-                    onSearch={search}
-                  />
-                </div>
-              )
-            },
-            label: () => {
-              return <span>&nbsp;</span>
-            }
-          }
-        }
-      }
-    ])
   }
   return schema
 })
@@ -211,6 +179,11 @@ const bottomButtonStyle = computed(() => {
   }
 })
 
+const showActionButton = computed(() => {
+  const propsComputed = unref(getProps)
+  return propsComputed.showSearch || propsComputed.showReset || propsComputed.showExpand
+})
+
 const setVisible = async () => {
   visible.value = !unref(visible)
 }
@@ -286,23 +259,26 @@ const onFormValidate = (prop: FormItemProp, isValid: boolean, message: string) =
     />
   </div>
 
-  <template v-if="layout === 'bottom'">
-    <div :style="bottomButtonStyle">
-      <ActionButton
-        :show-reset="getProps.showReset"
-        :show-search="getProps.showSearch"
-        :show-expand="getProps.showExpand"
-        :search-loading="getProps.searchLoading"
-        :reset-loading="getProps.resetLoading"
-        @expand="setVisible"
-        @reset="reset"
-        @search="search"
-      />
-    </div>
-  </template>
+  <div v-if="showActionButton" class="search-action-wrap" :style="bottomButtonStyle">
+    <ActionButton
+      :show-reset="getProps.showReset"
+      :show-search="getProps.showSearch"
+      :show-expand="getProps.showExpand"
+      :search-loading="getProps.searchLoading"
+      :reset-loading="getProps.resetLoading"
+      :visible="visible"
+      @expand="setVisible"
+      @reset="reset"
+      @search="search"
+    />
+  </div>
 </template>
 
 <style lang="scss" scoped>
+.search-action-wrap {
+  margin-top: 8px;
+}
+
 .search-form-wrap {
   :deep(.el-form-item) {
     width: 100%;
