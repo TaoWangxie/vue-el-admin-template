@@ -341,7 +341,8 @@ export default defineComponent({
       bindValue.headerCellStyle = (...args: any[]) => {
         const defaultStyle = {
           backgroundColor: 'var(--el-fill-color-light)',
-          color: 'var(--el-text-color-primary)'
+          color: 'var(--el-text-color-primary)',
+          fontWeight: 400
         }
         const customStyle =
           typeof headerCellStyle === 'function' ? headerCellStyle(...args) : headerCellStyle
