@@ -1,13 +1,10 @@
 <script setup lang="tsx">
-import { computed, nextTick, reactive, ref, unref } from 'vue'
-import { ElButton, ElTag } from 'element-plus'
+import { computed, reactive, ref, unref } from 'vue'
+import { ElButton, ElMessage, ElMessageBox, ElTag } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { ContentWrap } from '@/components/ContentWrap'
-import { Dialog } from '@/components/Dialog'
-import { Form } from '@/components/Form'
 import { Search } from '@/components/Search'
 import { Table, type TableColumn } from '@/components/Table'
-import { useForm } from '@/hooks/web/useForm'
 import { useTable } from '@/hooks/web/useTable'
 import type { FormSchema } from '@/components/Form'
 
@@ -62,21 +59,7 @@ const allData: DemoRecord[] = [
 
 const queryParams = ref<DemoQuery>({})
 
-const dialogVisible = ref(false)
-
-const dialogType = ref<'add' | 'edit'>('add')
-
-const editRecord = ref<DemoRecord>()
-
-const dialogTitle = computed(() => (dialogType.value === 'add' ? '新增项目' : '编辑项目'))
-
 const router = useRouter()
-
-const { formRegister, formMethods } = useForm()
-
-const dialogFormColProps = {
-  span: 24
-}
 
 const searchSchema = reactive<FormSchema[]>([
   {
@@ -118,46 +101,6 @@ const searchSchema = reactive<FormSchema[]>([
   }
 ])
 
-const addFormSchema = reactive<FormSchema[]>([
-  {
-    field: 'name',
-    label: '项目名称',
-    component: 'Input',
-    colProps: dialogFormColProps,
-    formItemProps: {
-      rules: [{ required: true, message: '请输入项目名称', trigger: 'blur' }]
-    },
-    componentProps: {
-      placeholder: '请输入项目名称'
-    }
-  },
-  {
-    field: 'owner',
-    label: '负责人',
-    component: 'Input',
-    colProps: dialogFormColProps,
-    formItemProps: {
-      rules: [{ required: true, message: '请输入负责人', trigger: 'blur' }]
-    },
-    componentProps: {
-      placeholder: '请输入负责人'
-    }
-  },
-  {
-    field: 'status',
-    label: '状态',
-    component: 'Select',
-    colProps: dialogFormColProps,
-    formItemProps: {
-      rules: [{ required: true, message: '请选择状态', trigger: 'change' }]
-    },
-    componentProps: {
-      placeholder: '请选择状态',
-      options: statusOptions
-    }
-  }
-])
-
 const columns = reactive<TableColumn[]>([
   { field: 'index', label: '序号', type: 'index', width: 70 },
   { field: 'name', label: '项目名称', minWidth: 160 },
@@ -192,10 +135,10 @@ const columns = reactive<TableColumn[]>([
           <ElButton type="primary" link onClick={() => openDetailPage(row as DemoRecord)}>
             详情
           </ElButton>
-          <ElButton type="primary" link onClick={() => openEditDialog(row as DemoRecord)}>
+          <ElButton type="primary" link onClick={() => openCreatePage(row as DemoRecord)}>
             编辑
           </ElButton>
-          <ElButton type="danger" link>
+          <ElButton type="danger" link onClick={() => deleteRecord(row as DemoRecord)}>
             删除
           </ElButton>
         </div>
@@ -249,6 +192,27 @@ const resetList = (params: DemoQuery) => {
   reloadTable()
 }
 
+const openCreatePage = (row?: DemoRecord) => {
+  if (!router.hasRoute('DemoCreate')) {
+    router.addRoute('Demo', {
+      path: 'create',
+      name: 'DemoCreate',
+      component: () => import('@/views/demo/Create.vue'),
+      meta: {
+        title: '新建处置明细',
+        hidden: true,
+        canTo: true,
+        followRoute: '/demo/index',
+        activeMenu: '/demo/index'
+      }
+    })
+  }
+  router.push({
+    path: '/demo/create',
+    query: row ? { id: row.id } : undefined
+  })
+}
+
 const openDetailPage = (row: DemoRecord) => {
   if (!router.hasRoute('DemoDetail')) {
     router.addRoute('Demo', {
@@ -267,41 +231,24 @@ const openDetailPage = (row: DemoRecord) => {
   router.push(`/demo/detail/${row.id}`)
 }
 
-const openAddDialog = async () => {
-  dialogType.value = 'add'
-  editRecord.value = undefined
-  dialogVisible.value = true
-  await nextTick()
-  const elForm = await formMethods.getElFormExpose()
-  elForm?.resetFields()
-}
+const deleteRecord = async (row: DemoRecord) => {
+  try {
+    await ElMessageBox.confirm(`确认删除“${row.name}”吗？`, '删除确认', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+  } catch {
+    return
+  }
 
-const openEditDialog = async (row: DemoRecord) => {
-  dialogType.value = 'edit'
-  editRecord.value = row
-  dialogVisible.value = true
-  await nextTick()
-  await formMethods.setValues({
-    name: row.name,
-    owner: row.owner,
-    status: row.status
-  })
-  const elForm = await formMethods.getElFormExpose()
-  elForm?.clearValidate()
-}
+  const deleteIndex = allData.findIndex((item) => item.id === row.id)
 
-const closeAddDialog = () => {
-  dialogVisible.value = false
-}
-
-const submitAdd = async () => {
-  const elForm = await formMethods.getElFormExpose()
-  await elForm?.validate((isValid) => {
-    if (isValid) {
-      editRecord.value = undefined
-      closeAddDialog()
-    }
-  })
+  if (deleteIndex > -1) {
+    allData.splice(deleteIndex, 1)
+    ElMessage.success('删除成功')
+    reloadTable()
+  }
 }
 </script>
 
@@ -319,7 +266,9 @@ const submitAdd = async () => {
 
   <ContentWrap>
     <div class="mb-12px flex items-center justify-between">
-      <BaseButton type="primary" @click="openAddDialog">新增</BaseButton>
+      <div class="flex items-center gap-8px">
+        <BaseButton type="primary" @click="openCreatePage()">新增</BaseButton>
+      </div>
     </div>
 
     <Table
@@ -336,13 +285,4 @@ const submitAdd = async () => {
       @refresh="reloadTable"
     />
   </ContentWrap>
-
-  <Dialog v-model="dialogVisible" :title="dialogTitle" width="560px" max-height="360px">
-    <Form :schema="addFormSchema" label-width="90px" :is-col="true" @register="formRegister" />
-
-    <template #footer>
-      <BaseButton @click="closeAddDialog">取消</BaseButton>
-      <BaseButton type="primary" @click="submitAdd">保存</BaseButton>
-    </template>
-  </Dialog>
 </template>

@@ -36,6 +36,18 @@ const adminList = [
         }
       },
       {
+        path: 'create',
+        name: 'DemoCreate',
+        component: 'views/demo/Create',
+        meta: {
+          title: '新建处置明细',
+          hidden: true,
+          canTo: true,
+          followRoute: '/demo/index',
+          activeMenu: '/demo/index'
+        }
+      },
+      {
         path: 'BlankPage',
         name: 'BlankPage',
         component: 'views/blank/Blank',
