@@ -2,7 +2,22 @@ import { reactive } from 'vue'
 import { eachTree, treeMap, filter } from '@/utils/tree'
 import { FormSchema } from '@/components/Form'
 import { TableColumn } from '@/components/Table'
-import { DescriptionsSchema } from '@/components/Descriptions'
+
+export interface DetailSchema {
+  span?: number
+  field: string
+  label?: string
+  width?: string | number
+  minWidth?: string | number
+  align?: 'left' | 'center' | 'right'
+  labelAlign?: 'left' | 'center' | 'right'
+  className?: string
+  labelClassName?: string
+  slots?: {
+    default?: (...args: any[]) => JSX.Element | null
+    label?: (...args: any[]) => JSX.Element | null
+  }
+}
 
 export type CrudSchema = Omit<TableColumn, 'children'> & {
   search?: CrudSearchParams
@@ -27,7 +42,7 @@ interface CrudFormParams extends Omit<FormSchema, 'field'> {
   hidden?: boolean
 }
 
-interface CrudDescriptionsParams extends Omit<DescriptionsSchema, 'field'> {
+interface CrudDescriptionsParams extends Omit<DetailSchema, 'field'> {
   // 是否隐藏表单项
   hidden?: boolean
 }
@@ -36,7 +51,7 @@ interface AllSchemas {
   searchSchema: FormSchema[]
   tableColumns: TableColumn[]
   formSchema: FormSchema[]
-  detailSchema: DescriptionsSchema[]
+  detailSchema: DetailSchema[]
 }
 
 // 过滤所有结构
@@ -63,7 +78,7 @@ export const useCrudSchemas = (
   const formSchema = filterFormSchema(crudSchema)
   allSchemas.formSchema = formSchema
 
-  const detailSchema = filterDescriptionsSchema(crudSchema)
+  const detailSchema = filterDetailSchema(crudSchema)
   allSchemas.detailSchema = detailSchema
 
   return {
@@ -134,25 +149,25 @@ const filterFormSchema = (crudSchema: CrudSchema[]): FormSchema[] => {
   return formSchema
 }
 
-// 过滤 descriptions 结构
-const filterDescriptionsSchema = (crudSchema: CrudSchema[]): DescriptionsSchema[] => {
-  const descriptionsSchema: FormSchema[] = []
+// 过滤详情结构
+const filterDetailSchema = (crudSchema: CrudSchema[]): DetailSchema[] => {
+  const detailSchema: DetailSchema[] = []
 
   eachTree(crudSchema, (schemaItem: CrudSchema) => {
     // 判断是否隐藏
     if (!schemaItem?.detail?.hidden) {
-      const descriptionsSchemaItem = {
+      const detailSchemaItem = {
         ...schemaItem.detail,
         field: schemaItem.field,
         label: schemaItem.detail?.label || schemaItem.label
       }
 
       // 删除不必要的字段
-      delete descriptionsSchemaItem.hidden
+      delete detailSchemaItem.hidden
 
-      descriptionsSchema.push(descriptionsSchemaItem)
+      detailSchema.push(detailSchemaItem)
     }
   })
 
-  return descriptionsSchema
+  return detailSchema
 }
