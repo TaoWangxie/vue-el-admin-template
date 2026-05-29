@@ -9,14 +9,15 @@ const MENU_ACTIVE_BG_COLOR = 'transparent'
 const MENU_ACTIVE_OVERLAY_COLOR = 'rgb(255 255 255 / 22%)'
 const LEFT_MENU_DEFAULT_THEME = {
   leftMenuBorderColor: 'inherit',
-  leftMenuBgColor: '#001529',
-  leftMenuBgLightColor: '#0f2438',
+  leftMenuBgColor: '#293055',
+  leftMenuBgLightColor: '#383f64',
   leftMenuTextColor: '#bfcbd9',
   logoTitleTextColor: '#fff',
   logoBorderColor: 'inherit'
 }
 
 const WHITE_MENU_BG_VALUES = ['#fff', '#ffffff', 'white', 'rgb(255, 255, 255)', 'rgb(255 255 255)']
+const LEGACY_DEFAULT_MENU_BG_VALUES = ['#001529']
 
 interface AppState {
   breadcrumb: boolean
@@ -80,9 +81,9 @@ export const useAppStore = defineStore('app', {
         // 左侧菜单边框颜色
         leftMenuBorderColor: 'inherit',
         // 左侧菜单背景颜色
-        leftMenuBgColor: '#001529',
+        leftMenuBgColor: '#293055',
         // 左侧菜单浅色背景颜色
-        leftMenuBgLightColor: '#0f2438',
+        leftMenuBgLightColor: '#383f64',
         // 左侧菜单选中背景颜色
         leftMenuBgActiveColor: MENU_ACTIVE_BG_COLOR,
         // 左侧菜单收起选中背景颜色
@@ -269,7 +270,10 @@ export const useAppStore = defineStore('app', {
       const currentMenuBg = String(this.theme.leftMenuBgColor || '')
         .trim()
         .toLowerCase()
-      if (WHITE_MENU_BG_VALUES.includes(currentMenuBg)) {
+      if (
+        WHITE_MENU_BG_VALUES.includes(currentMenuBg) ||
+        LEGACY_DEFAULT_MENU_BG_VALUES.includes(currentMenuBg)
+      ) {
         this.theme = Object.assign(this.theme, LEFT_MENU_DEFAULT_THEME)
       }
       this.theme.leftMenuBgActiveColor = MENU_ACTIVE_BG_COLOR

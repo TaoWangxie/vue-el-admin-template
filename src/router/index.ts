@@ -74,6 +74,18 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         meta: {
           title: 'Demo'
         }
+      },
+      {
+        path: 'detail/:id?',
+        name: 'DemoDetail',
+        component: () => import('@/views/demo/Detail.vue'),
+        meta: {
+          title: '处置明细详情',
+          hidden: true,
+          canTo: true,
+          followRoute: '/demo/index',
+          activeMenu: '/demo/index'
+        }
       }
     ]
   },

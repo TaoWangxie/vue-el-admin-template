@@ -24,6 +24,18 @@ const adminList = [
         }
       },
       {
+        path: 'detail/:id?',
+        name: 'DemoDetail',
+        component: 'views/demo/Detail',
+        meta: {
+          title: '处置明细详情',
+          hidden: true,
+          canTo: true,
+          followRoute: '/demo/index',
+          activeMenu: '/demo/index'
+        }
+      },
+      {
         path: 'BlankPage',
         name: 'BlankPage',
         component: 'views/blank/Blank',

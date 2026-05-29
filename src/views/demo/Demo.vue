@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { computed, nextTick, reactive, ref, unref } from 'vue'
 import { ElButton, ElTag } from 'element-plus'
+import { useRouter } from 'vue-router'
 import { ContentWrap } from '@/components/ContentWrap'
 import { Dialog } from '@/components/Dialog'
 import { Form } from '@/components/Form'
@@ -68,6 +69,8 @@ const dialogType = ref<'add' | 'edit'>('add')
 const editRecord = ref<DemoRecord>()
 
 const dialogTitle = computed(() => (dialogType.value === 'add' ? '新增项目' : '编辑项目'))
+
+const router = useRouter()
 
 const { formRegister, formMethods } = useForm()
 
@@ -181,11 +184,14 @@ const columns = reactive<TableColumn[]>([
   {
     field: 'action',
     label: '操作',
-    width: 150,
+    width: 190,
     fixed: 'right',
     slots: {
       default: ({ row }) => (
         <div class="flex items-center gap-8px">
+          <ElButton type="primary" link onClick={() => openDetailPage(row as DemoRecord)}>
+            详情
+          </ElButton>
           <ElButton type="primary" link onClick={() => openEditDialog(row as DemoRecord)}>
             编辑
           </ElButton>
@@ -241,6 +247,24 @@ const resetList = (params: DemoQuery) => {
   queryParams.value = params
   tableState.currentPage.value = 1
   reloadTable()
+}
+
+const openDetailPage = (row: DemoRecord) => {
+  if (!router.hasRoute('DemoDetail')) {
+    router.addRoute('Demo', {
+      path: 'detail/:id?',
+      name: 'DemoDetail',
+      component: () => import('@/views/demo/Detail.vue'),
+      meta: {
+        title: '处置明细详情',
+        hidden: true,
+        canTo: true,
+        followRoute: '/demo/index',
+        activeMenu: '/demo/index'
+      }
+    })
+  }
+  router.push(`/demo/detail/${row.id}`)
 }
 
 const openAddDialog = async () => {
