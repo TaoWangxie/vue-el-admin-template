@@ -174,8 +174,14 @@ const reset = async () => {
 }
 
 const bottomButtonStyle = computed(() => {
+  const justifyContentMap = {
+    left: 'flex-start',
+    center: 'center',
+    right: 'flex-end'
+  }
+
   return {
-    textAlign: unref(getProps).buttonPosition as unknown as 'left' | 'center' | 'right'
+    justifyContent: justifyContentMap[unref(getProps).buttonPosition]
   }
 })
 
@@ -259,7 +265,11 @@ const onFormValidate = (prop: FormItemProp, isValid: boolean, message: string) =
     />
   </div>
 
-  <div v-if="showActionButton" class="search-action-wrap" :style="bottomButtonStyle">
+  <div
+    v-if="showActionButton || $slots.action"
+    class="search-action-wrap"
+    :style="bottomButtonStyle"
+  >
     <ActionButton
       :show-reset="getProps.showReset"
       :show-search="getProps.showSearch"
@@ -271,12 +281,16 @@ const onFormValidate = (prop: FormItemProp, isValid: boolean, message: string) =
       @reset="reset"
       @search="search"
     />
+    <slot name="action"></slot>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .search-action-wrap {
+  display: flex;
   margin-top: 8px;
+  align-items: center;
+  gap: 8px;
 }
 
 .search-form-wrap {

@@ -261,16 +261,14 @@ const deleteRecord = async (row: DemoRecord) => {
       label-width="80px"
       @search="searchList"
       @reset="resetList"
-    />
+    >
+      <template #action>
+        <BaseButton type="primary" @click="openCreatePage()">新增</BaseButton>
+      </template>
+    </Search>
   </ContentWrap>
 
   <ContentWrap>
-    <div class="mb-12px flex items-center justify-between">
-      <div class="flex items-center gap-8px">
-        <BaseButton type="primary" @click="openCreatePage()">新增</BaseButton>
-      </div>
-    </div>
-
     <Table
       v-model:current-page="tableState.currentPage.value"
       v-model:page-size="tableState.pageSize.value"

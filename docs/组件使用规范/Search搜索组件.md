@@ -114,6 +114,18 @@ const setDefault = async () => {
 
 查询、重置、展开收起按钮固定渲染在表单下方，始终单独占一行；通过 `buttonPosition` 控制左、中、右对齐。
 
+## 操作按钮插槽
+
+列表页的新增、导出等操作按钮放到 `action` 插槽中，插槽内容会紧跟在查询、重置按钮后面。
+
+```vue
+<Search :schema="schema" @search="onSearch" @reset="onReset">
+  <template #action>
+    <BaseButton type="primary" @click="openCreatePage">新增</BaseButton>
+  </template>
+</Search>
+```
+
 ## 搜索项列数
 
 启用栅格布局时，`Search` 默认会自动设置响应式列宽：
@@ -236,7 +248,11 @@ const onReset = (params: Recordable) => {
 </script>
 
 <template>
-  <Search :schema="searchSchema" @search="onSearch" @reset="onReset" />
+  <Search :schema="searchSchema" @search="onSearch" @reset="onReset">
+    <template #action>
+      <BaseButton type="primary" @click="openCreatePage">新增</BaseButton>
+    </template>
+  </Search>
   <Table :columns="columns" :data="tableState.dataList.value" />
 </template>
 ```
@@ -248,4 +264,5 @@ const onReset = (params: Recordable) => {
 3. 查询接口参数默认会过滤空值字段。
 4. 需要动态修改查询项时，使用 `useSearch`。
 5. 搜索后通常需要把表格页码重置为第一页。
-6. 修改 Search 的 props、事件、暴露方法、默认行为后，必须精炼同步本文档，并确保本文档不超过 500 行。
+6. 列表页操作按钮优先放到 `Search` 的 `action` 插槽中，紧跟查询、重置按钮展示。
+7. 修改 Search 的 props、事件、暴露方法、默认行为后，必须精炼同步本文档，并确保本文档不超过 500 行。
