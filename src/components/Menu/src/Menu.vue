@@ -214,6 +214,20 @@ $prefix-cls: '#{$namespace}-menu';
     }
   }
 
+  // 纵向菜单收紧行高，减少列表占用空间
+  &__vertical {
+    :deep(.#{$elNamespace}-menu) {
+      --#{$elNamespace}-menu-item-height: 44px;
+      --#{$elNamespace}-menu-sub-item-height: 44px;
+
+      .#{$elNamespace}-sub-menu__title,
+      .#{$elNamespace}-menu-item {
+        height: 44px;
+        line-height: 44px;
+      }
+    }
+  }
+
   // 水平菜单
   &__horizontal {
     height: calc(var(--top-tool-height)) !important;
@@ -252,6 +266,15 @@ $prefix-cls: '#{$namespace}-menu-popper';
 
 .#{$prefix-cls}--vertical,
 .#{$prefix-cls}--horizontal {
+  --el-menu-item-height: 44px;
+  --el-menu-sub-item-height: 44px;
+
+  .el-sub-menu__title,
+  .el-menu-item {
+    height: 44px;
+    line-height: 44px;
+  }
+
   // 设置选中时子标题的颜色
   .is-active {
     & > .el-sub-menu__title {
