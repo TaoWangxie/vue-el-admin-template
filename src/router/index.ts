@@ -102,22 +102,34 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     ]
   },
   {
-    path: '/blank',
+    path: '/asset',
     component: Layout,
-    name: 'Blank',
-    redirect: '/blank/index',
+    name: 'AssetManagement',
+    redirect: '/asset/vehicle-list',
     meta: {
-      title: 'router.blankPage',
-      icon: 'ep-icon:Document'
+      title: '资产管理',
+      icon: 'ep-icon:PriceTag',
+      alwaysShow: true
     },
     children: [
       {
-        path: 'index',
-        name: 'BlankPage',
-        component: () => import('@/views/blank/Blank.vue'),
+        path: 'vehicle-list',
+        name: 'VehicleList',
+        component: () => import('@/views/pages/assetManagement/vehicleList/VehicleList.vue'),
         meta: {
-          title: 'router.blankPage',
-          icon: 'ep-icon:Document'
+          title: '车辆列表'
+        }
+      },
+      {
+        path: 'vehicle-create',
+        name: 'VehicleCreate',
+        component: () => import('@/views/pages/assetManagement/vehicleList/VehicleCreate.vue'),
+        meta: {
+          title: '车辆新建',
+          hidden: true,
+          canTo: true,
+          followRoute: '/asset/vehicle-list',
+          activeMenu: '/asset/vehicle-list'
         }
       }
     ]

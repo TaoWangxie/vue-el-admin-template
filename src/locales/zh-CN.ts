@@ -175,8 +175,7 @@ export default {
     treeTable: '树形表格',
     PicturePreview: '表格图片预览',
     department: '部门管理',
-    menuManagement: '菜单管理',
-    blankPage: '空页面'
+    menuManagement: '菜单管理'
   },
   permission: {
     hasPermission: '请设置操作权限值'

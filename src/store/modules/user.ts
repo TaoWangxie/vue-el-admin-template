@@ -16,6 +16,82 @@ interface UserState {
   loginInfo?: RememberLoginInfo
 }
 
+const assetManagementRoute: AppCustomRouteRecordRaw = {
+  path: '/asset',
+  component: '#',
+  name: 'AssetManagement',
+  meta: {
+    title: '资产管理',
+    icon: 'ep-icon:PriceTag',
+    alwaysShow: true
+  },
+  redirect: '/asset/vehicle-list',
+  children: [
+    {
+      path: 'vehicle-list',
+      name: 'VehicleList',
+      component: 'views/pages/assetManagement/vehicleList/VehicleList',
+      redirect: '',
+      meta: {
+        title: '车辆列表'
+      }
+    },
+    {
+      path: 'vehicle-create',
+      name: 'VehicleCreate',
+      component: 'views/pages/assetManagement/vehicleList/VehicleCreate',
+      redirect: '',
+      meta: {
+        title: '车辆新建',
+        hidden: true,
+        canTo: true,
+        followRoute: '/asset/vehicle-list',
+        activeMenu: '/asset/vehicle-list'
+      }
+    }
+  ]
+}
+
+const isBlankRoute = (route: string | AppCustomRouteRecordRaw) => {
+  if (typeof route === 'string') {
+    return route === '/blank' || route === '/blank/index'
+  }
+
+  return route.name === 'Blank' || route.name === 'BlankPage' || route.path.includes('blank')
+}
+
+const normalizeRoleRouters = (
+  roleRouters?: string[] | AppCustomRouteRecordRaw[]
+): string[] | AppCustomRouteRecordRaw[] | undefined => {
+  if (!roleRouters) return roleRouters
+
+  if (roleRouters.every((route): route is string => typeof route === 'string')) {
+    const routers = roleRouters.filter((route) => !isBlankRoute(route))
+    return routers.includes('/asset/vehicle-list')
+      ? routers
+      : [...routers, '/asset', '/asset/vehicle-list']
+  }
+
+  const routers = (roleRouters as AppCustomRouteRecordRaw[])
+    .filter((route) => !isBlankRoute(route))
+    .map((route) => ({
+      ...route,
+      children:
+        route.path === '/asset'
+          ? [
+              ...(route.children?.filter((child) => !isBlankRoute(child)) || []),
+              ...(assetManagementRoute.children || []).filter(
+                (child) => !route.children?.some((routeChild) => routeChild.name === child.name)
+              )
+            ]
+          : route.children?.filter((child) => !isBlankRoute(child))
+    }))
+
+  return routers.some((route) => route.path === '/asset')
+    ? routers
+    : [...routers, assetManagementRoute]
+}
+
 export const useUserStore = defineStore('user', {
   state: (): UserState => {
     return {
@@ -39,7 +115,7 @@ export const useUserStore = defineStore('user', {
       return this.userInfo
     },
     getRoleRouters(): string[] | AppCustomRouteRecordRaw[] | undefined {
-      return this.roleRouters
+      return normalizeRoleRouters(this.roleRouters)
     },
     getRememberMe(): boolean {
       return this.rememberMe
@@ -59,7 +135,7 @@ export const useUserStore = defineStore('user', {
       this.userInfo = userInfo
     },
     setRoleRouters(roleRouters: string[] | AppCustomRouteRecordRaw[]) {
-      this.roleRouters = roleRouters
+      this.roleRouters = normalizeRoleRouters(roleRouters)
     },
     logoutConfirm() {
       const { t } = useI18n()

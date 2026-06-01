@@ -46,20 +46,45 @@ const adminList = [
           followRoute: '/demo/index',
           activeMenu: '/demo/index'
         }
+      }
+    ]
+  },
+  {
+    path: '/asset',
+    component: '#',
+    name: 'AssetManagement',
+    meta: {
+      title: '资产管理',
+      icon: 'ep-icon:PriceTag',
+      alwaysShow: true
+    },
+    redirect: '/asset/vehicle-list',
+    children: [
+      {
+        path: 'vehicle-list',
+        name: 'VehicleList',
+        component: 'views/pages/assetManagement/vehicleList/VehicleList',
+        meta: {
+          title: '车辆列表'
+        }
       },
       {
-        path: 'BlankPage',
-        name: 'BlankPage',
-        component: 'views/blank/Blank',
+        path: 'vehicle-create',
+        name: 'VehicleCreate',
+        component: 'views/pages/assetManagement/vehicleList/VehicleCreate',
         meta: {
-          title: 'router.blankPage'
+          title: '车辆新建',
+          hidden: true,
+          canTo: true,
+          followRoute: '/asset/vehicle-list',
+          activeMenu: '/asset/vehicle-list'
         }
       }
     ]
   }
 ]
 
-const testList: string[] = ['/demo', '/demo/index', '/blank/index']
+const testList: string[] = ['/demo', '/demo/index', '/asset', '/asset/vehicle-list']
 
 export default [
   // 列表接口

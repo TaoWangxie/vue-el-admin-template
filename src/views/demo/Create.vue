@@ -1,12 +1,12 @@
 <script setup lang="tsx">
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElIcon, ElInput, ElOption, ElSelect, ElUpload } from 'element-plus'
-import { UploadFilled } from '@element-plus/icons-vue'
 import { DetailSection } from '@/components/DetailSection'
+import { FileUpload } from '@/components/FileUpload'
 import { Form, type FormSchema } from '@/components/Form'
 import { useForm } from '@/hooks/web/useForm'
 import { useTagsView } from '@/hooks/web/useTagsView'
+import { ElInput, ElOption, ElSelect, ElUpload } from 'element-plus'
 
 interface CreateFormValues {
   name?: string
@@ -221,21 +221,7 @@ const basicFormSchema = reactive<FormSchema[]>([
     colProps: fullFormColProps,
     formItemProps: {
       slots: {
-        default: () => (
-          <ElUpload action="#" autoUpload={false} limit={1}>
-            {{
-              trigger: () => (
-                <button class="upload-file-trigger" type="button">
-                  <ElIcon size={22}>
-                    <UploadFilled />
-                  </ElIcon>
-                  <span>选择文件</span>
-                </button>
-              ),
-              tip: () => <div class="el-upload__tip">支持上传业务附件，单个文件不超过 10MB</div>
-            }}
-          </ElUpload>
-        )
+        default: () => <FileUpload tip="支持上传业务附件，单个文件不超过 10MB" />
       }
     }
   },
@@ -309,26 +295,6 @@ const submitPage = async () => {
     padding: 12px 0;
     justify-content: center;
     gap: 12px;
-  }
-}
-
-:deep(.upload-file-trigger) {
-  display: inline-flex;
-  height: 34px;
-  padding: 0 12px;
-  appearance: none;
-  color: var(--el-color-primary);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  background: #f5f7fb;
-  border: none;
-  border-radius: 4px;
-  align-items: center;
-  gap: 6px;
-
-  &:hover {
-    background: #eef4ff;
   }
 }
 
