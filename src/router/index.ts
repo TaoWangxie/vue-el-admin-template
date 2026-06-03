@@ -10,7 +10,7 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/demo/index',
+    redirect: '/dashboard/business',
     name: 'Root',
     meta: {
       hidden: true
@@ -56,6 +56,30 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
 ]
 
 export const asyncRouterMap: AppRouteRecordRaw[] = [
+  {
+    path: '/dashboard',
+    component: Layout,
+    name: 'Dashboard',
+    redirect: '/dashboard/business',
+    meta: {
+      title: '首页',
+      icon: 'ep-icon:DataLine',
+      hidden: true,
+      alwaysShow: false
+    },
+    children: [
+      {
+        path: 'business',
+        name: 'BusinessDashboard',
+        component: () => import('@/views/pages/dashboard/BusinessDashboard.vue'),
+        meta: {
+          title: '首页',
+          hidden: true,
+          canTo: true
+        }
+      }
+    ]
+  },
   {
     path: '/demo',
     component: Layout,

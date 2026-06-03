@@ -16,6 +16,32 @@ interface UserState {
   loginInfo?: RememberLoginInfo
 }
 
+const dashboardRoute: AppCustomRouteRecordRaw = {
+  path: '/dashboard',
+  component: '#',
+  name: 'Dashboard',
+  meta: {
+    title: '首页',
+    icon: 'ep-icon:DataLine',
+    hidden: true,
+    alwaysShow: false
+  },
+  redirect: '/dashboard/business',
+  children: [
+    {
+      path: 'business',
+      name: 'BusinessDashboard',
+      component: 'views/pages/dashboard/BusinessDashboard',
+      redirect: '',
+      meta: {
+        title: '首页',
+        hidden: true,
+        canTo: true
+      }
+    }
+  ]
+}
+
 const assetManagementRoute: AppCustomRouteRecordRaw = {
   path: '/asset',
   component: '#',
@@ -60,6 +86,14 @@ const isBlankRoute = (route: string | AppCustomRouteRecordRaw) => {
   return route.name === 'Blank' || route.name === 'BlankPage' || route.path.includes('blank')
 }
 
+const isDashboardRoute = (route: string | AppCustomRouteRecordRaw) => {
+  if (typeof route === 'string') {
+    return route === '/dashboard' || route === '/dashboard/business'
+  }
+
+  return route.path === '/dashboard' || route.name === 'Dashboard'
+}
+
 const normalizeRoleRouters = (
   roleRouters?: string[] | AppCustomRouteRecordRaw[]
 ): string[] | AppCustomRouteRecordRaw[] | undefined => {
@@ -67,9 +101,13 @@ const normalizeRoleRouters = (
 
   if (roleRouters.every((route): route is string => typeof route === 'string')) {
     const routers = roleRouters.filter((route) => !isBlankRoute(route))
-    return routers.includes('/asset/vehicle-list')
+    const normalizedRouters = routers.some(isDashboardRoute)
       ? routers
-      : [...routers, '/asset', '/asset/vehicle-list']
+      : ['/dashboard', '/dashboard/business', ...routers]
+
+    return normalizedRouters.includes('/asset/vehicle-list')
+      ? normalizedRouters
+      : [...normalizedRouters, '/asset', '/asset/vehicle-list']
   }
 
   const routers = (roleRouters as AppCustomRouteRecordRaw[])
@@ -87,9 +125,11 @@ const normalizeRoleRouters = (
           : route.children?.filter((child) => !isBlankRoute(child))
     }))
 
-  return routers.some((route) => route.path === '/asset')
-    ? routers
-    : [...routers, assetManagementRoute]
+  const normalizedRouters = routers.some(isDashboardRoute) ? routers : [dashboardRoute, ...routers]
+
+  return normalizedRouters.some((route) => route.path === '/asset')
+    ? normalizedRouters
+    : [...normalizedRouters, assetManagementRoute]
 }
 
 export const useUserStore = defineStore('user', {
