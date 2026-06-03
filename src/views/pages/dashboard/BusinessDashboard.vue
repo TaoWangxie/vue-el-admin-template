@@ -2,13 +2,16 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import type { EChartsOption } from 'echarts'
 import { ElSelect, ElOption } from 'element-plus'
-import { ArrowDown, ArrowUp, Calendar, Van } from '@element-plus/icons-vue'
 import echarts from '@/plugins/echarts'
 import overviewVehicleIcon from '@/assets/svgs/dashboard/overview_vehicle.svg?url'
 import overviewDocumentIcon from '@/assets/svgs/dashboard/overview_document.svg?url'
 import pendingConfirmIcon from '@/assets/svgs/dashboard/pending_confirm.svg?url'
 import pendingDispatchIcon from '@/assets/svgs/dashboard/pending_dispatch.svg?url'
 import pendingSignIcon from '@/assets/svgs/dashboard/pending_sign.svg?url'
+import pendingDeliveryIcon from '@/assets/svgs/dashboard/djc.svg?url'
+import pendingReturnIcon from '@/assets/svgs/dashboard/dhc.svg?url'
+import trendUpIcon from '@/assets/svgs/dashboard/up.svg?url'
+import trendDownIcon from '@/assets/svgs/dashboard/down.svg?url'
 
 interface LeaseUnitOption {
   label: string
@@ -413,28 +416,39 @@ const currentDashboardData = computed(() => dashboardDataMap[selectedLeaseUnit.v
 const metricCards = computed(() => currentDashboardData.value.metrics)
 const pendingSteps = computed(() => currentDashboardData.value.pendingSteps)
 const reminders = computed(() => currentDashboardData.value.reminders)
+// 租赁待办当前按设计稿展示到“待签约”，后续可替换为接口返回的流程节点。
+const pendingProgressIndex = 2
 
-const pendingSvgIconMap: Partial<Record<PendingStep['icon'], string>> = {
+const pendingSvgIconMap: Record<PendingStep['icon'], string> = {
   document: pendingConfirmIcon,
   location: pendingDispatchIcon,
-  edit: pendingSignIcon
-}
-
-const pendingFallbackIconMap = {
-  vehicle: Van,
-  return: Calendar
+  edit: pendingSignIcon,
+  vehicle: pendingDeliveryIcon,
+  return: pendingReturnIcon
 }
 
 const getPendingIconUrl = (icon: PendingStep['icon']) => {
   return pendingSvgIconMap[icon]
 }
 
-const getPendingFallbackIcon = (icon: PendingStep['icon']) => {
-  return pendingFallbackIconMap[icon as keyof typeof pendingFallbackIconMap]
+const getPendingStepClass = (index: number) => {
+  return index <= pendingProgressIndex ? 'is-active' : 'is-pending'
+}
+
+const getPendingLineClass = (index: number) => {
+  if (index <= pendingProgressIndex) {
+    return 'is-active'
+  }
+
+  return index === pendingProgressIndex + 1 ? 'is-partial' : 'is-pending'
 }
 
 const getMetricIconUrl = (icon: OverviewMetric['icon']) => {
   return icon === 'vehicle' ? overviewVehicleIcon : overviewDocumentIcon
+}
+
+const getMetricTrendIconUrl = (trendType: OverviewMetric['trendType']) => {
+  return trendType === 'up' ? trendUpIcon : trendDownIcon
 }
 
 const getMetricNumericValue = (value: string) => {
@@ -816,7 +830,7 @@ onBeforeUnmount(() => {
               <span v-else>较上月</span>
               <span :class="['metric-trend', `is-${item.trendType}`]">
                 {{ item.trend }}
-                <component :is="item.trendType === 'up' ? ArrowUp : ArrowDown" />
+                <img :src="getMetricTrendIconUrl(item.trendType)" alt="" />
               </span>
             </span>
           </div>
@@ -829,15 +843,14 @@ onBeforeUnmount(() => {
         <section class="dashboard-panel pending-panel">
           <h3 class="panel-title">租赁待办</h3>
           <div class="pending-steps">
-            <article v-for="(item, index) in pendingSteps" :key="item.label" class="pending-step">
-              <span v-if="index > 0" class="pending-line"></span>
-              <span :class="['pending-icon', { 'is-fallback': !getPendingIconUrl(item.icon) }]">
-                <img
-                  v-if="getPendingIconUrl(item.icon)"
-                  :src="getPendingIconUrl(item.icon)"
-                  alt=""
-                />
-                <component :is="getPendingFallbackIcon(item.icon)" v-else />
+            <article
+              v-for="(item, index) in pendingSteps"
+              :key="item.label"
+              :class="['pending-step', getPendingStepClass(index)]"
+            >
+              <span v-if="index > 0" :class="['pending-line', getPendingLineClass(index)]"></span>
+              <span class="pending-icon">
+                <img :src="getPendingIconUrl(item.icon)" alt="" />
               </span>
               <span class="pending-label">{{ item.label }}</span>
               <strong>{{ item.count }}<em>辆</em></strong>
@@ -1054,7 +1067,8 @@ onBeforeUnmount(() => {
   gap: 2px;
   font-weight: 700;
 
-  svg {
+  svg,
+  img {
     width: 12px;
     height: 12px;
   }
@@ -1117,6 +1131,14 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 4px;
   background: #e8edf3;
+
+  &.is-active {
+    background: #1a76ff;
+  }
+
+  &.is-partial {
+    background: linear-gradient(90deg, #1a76ff 0 50%, #e8edf3 50% 100%);
+  }
 }
 
 .pending-icon {
@@ -1129,13 +1151,10 @@ onBeforeUnmount(() => {
     width: 40px;
     height: 40px;
   }
+}
 
-  &.is-fallback {
-    color: #fff;
-    font-size: 20px;
-    background: var(--el-color-primary);
-    border-radius: 50%;
-  }
+.pending-step.is-pending .pending-icon img {
+  filter: grayscale(1) opacity(0.46);
 }
 
 .pending-label {
