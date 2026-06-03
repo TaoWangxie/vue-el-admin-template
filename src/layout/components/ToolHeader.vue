@@ -28,7 +28,7 @@ const screenfull = computed(() => appStore.getScreenfull)
 const layout = computed(() => appStore.getLayout)
 
 const headerStatusList = [
-  { label: '待审批', count: 1, active: true },
+  { label: '待审批', count: 1 },
   { label: '待还车', count: 10 },
   { label: '已逾期', count: 8 }
 ]
@@ -57,13 +57,7 @@ export default defineComponent({
             {headerStatusList.map((item, index) => (
               <>
                 {index > 0 ? <span class={`${prefixCls}__status-divider`}></span> : undefined}
-                <button
-                  class={[
-                    `${prefixCls}__status-item`,
-                    item.active ? `${prefixCls}__status-item--active` : ''
-                  ]}
-                  type="button"
-                >
+                <button class={`${prefixCls}__status-item`} type="button">
                   <span>{item.label}</span>
                   <span>（{item.count}）</span>
                 </button>
@@ -105,7 +99,7 @@ $prefix-cls: '#{$namespace}-tool-header';
     height: 32px;
     padding: 0 12px;
     appearance: none;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--el-text-color-regular);
     cursor: pointer;
     background: transparent;
@@ -114,8 +108,7 @@ $prefix-cls: '#{$namespace}-tool-header';
     align-items: center;
     justify-content: center;
 
-    &:hover,
-    &--active {
+    &:hover {
       background: var(--el-fill-color-lighter);
     }
   }
