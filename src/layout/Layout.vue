@@ -1,20 +1,13 @@
 <script lang="tsx">
-import { computed, defineAsyncComponent, defineComponent, ref, unref } from 'vue'
+import { computed, defineComponent, unref } from 'vue'
 import { useAppStore } from '@/store/modules/app'
 import { Backtop } from '@/components/Backtop'
 import { useRenderLayout } from './components/useRenderLayout'
 import { useDesign } from '@/hooks/web/useDesign'
-import { Icon } from '@/components/Icon'
 
 const { getPrefixCls } = useDesign()
 
 const prefixCls = getPrefixCls('layout')
-
-const settingPrefixCls = getPrefixCls('setting')
-
-const AsyncSetting = defineAsyncComponent(() =>
-  import('@/components/Setting').then(({ Setting }) => Setting)
-)
 
 const appStore = useAppStore()
 
@@ -25,12 +18,6 @@ const mobile = computed(() => appStore.getMobile)
 const collapse = computed(() => appStore.getCollapse)
 
 const layout = computed(() => appStore.getLayout)
-
-const settingVisible = ref(false)
-
-const openSetting = () => {
-  settingVisible.value = true
-}
 
 const handleClickOutside = () => {
   appStore.setCollapse(true)
@@ -70,20 +57,6 @@ export default defineComponent({
         {renderLayout()}
 
         <Backtop></Backtop>
-
-        <div
-          class={[
-            settingPrefixCls,
-            'fixed top-[45%] right-0 w-40px h-40px flex items-center justify-center bg-[var(--el-color-primary)] cursor-pointer z-10'
-          ]}
-          onClick={openSetting}
-        >
-          <Icon icon="ep-icon:Setting" color="#fff" />
-        </div>
-
-        {settingVisible.value ? (
-          <AsyncSetting v-model={settingVisible.value}></AsyncSetting>
-        ) : undefined}
       </section>
     )
   }
@@ -105,9 +78,5 @@ $prefix-cls: '#{$namespace}-layout';
       }
     }
   }
-}
-
-.#{$namespace}-setting {
-  border-radius: 6px 0 0 6px;
 }
 </style>

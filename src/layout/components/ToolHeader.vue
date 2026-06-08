@@ -1,7 +1,5 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
-import { ElIcon } from 'element-plus'
-import { ChatDotSquare } from '@element-plus/icons-vue'
 import { Collapse } from '@/components/Collapse'
 import { UserInfo } from '@/components/UserInfo'
 import { Screenfull } from '@/components/Screenfull'
@@ -64,11 +62,6 @@ export default defineComponent({
               </>
             ))}
           </div>
-          <button class={`${prefixCls}__message <md:hidden`} type="button">
-            <ElIcon size={18}>
-              <ChatDotSquare />
-            </ElIcon>
-          </button>
           {screenfull.value ? (
             <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}
@@ -118,25 +111,6 @@ $prefix-cls: '#{$namespace}-tool-header';
     height: 14px;
     margin: 0 10px;
     background: var(--el-border-color-lighter);
-  }
-
-  &__message {
-    display: inline-flex;
-    width: 38px;
-    height: 38px;
-    margin-right: 8px;
-    appearance: none;
-    color: var(--el-text-color-regular);
-    cursor: pointer;
-    background: var(--el-fill-color-lighter);
-    border: 0;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      background: var(--el-fill-color-light);
-    }
   }
 }
 </style>
